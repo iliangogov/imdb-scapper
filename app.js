@@ -6,18 +6,11 @@ const htmlParser = require("./utils/html-parser");
 const queuesFactory = require("./data-structures/queue");
 const modelsFactory = require("./models");
 const constants = require("./config/constants");
+const timeDelay = require("./utils/time-delay");
 
 require("./config/mongoose")(constants.connectionString);
 
 let urlsQueue = queuesFactory.getQueue();
-
-function wait(time) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, time);
-    });
-}
 
 constants.genres.forEach(genre => {
     for (let i = 0; i < constants.pagesCount; i += 1) {
@@ -41,7 +34,7 @@ function getMoviesFromUrl(url) {
 
             modelsFactory.insertManySimpleMovies(dbMovies);
 
-            return wait(1000);
+            return timeDelay(1000);
         })
         .then(() => {
             if (urlsQueue.isEmpty()) {
