@@ -4,7 +4,7 @@
 const mongoose = require("mongoose"),
     Schema = mongoose.Schema;
 
-let movieinfoSchema = new Schema({
+let MovieDetailsSchema = new Schema({
     imageUrl: {
         type: String,
         required: true
@@ -35,5 +35,6 @@ let movieinfoSchema = new Schema({
     }
 });
 
-mongoose.model("MovieDetails", movieinfoSchema);
-module.exports = mongoose.model("MovieInfo");
+mongoose.model("MovieDetails", MovieDetailsSchema);
+let MovieDetails = mongoose.model("MovieDetails");
+module.exports = MovieDetails;

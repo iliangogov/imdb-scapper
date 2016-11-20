@@ -24,31 +24,82 @@ module.exports.parseSimpleMovie = (selector, html) => {
         });
 };
 
-module.exports.parseMovieInformation = (html) => {
+module.exports.parseMovieDetails = (html) => {
     $("body").html(html);
+    const imageSelector = ".poster a img",
+        titleSelector = ".title_wrapper h1",
+        descriptionSelector = "#titleStoryLine div[itemprop=description] p",
+        categoriesSelector = "div[itemprop=genre] a";
+
+    let imageLink = $(imageSelector).attr("src"),
+        title = $(titleSelector).text(),
+        description = $(descriptionSelector).text(),
+        categories = [];
+
+    let genres = $(categoriesSelector);
+    genres.each((index, item) => {
+        let $item = $(item);
+        categories.push($item.html());
+    });
+
+    const actorsList = $("table.cast_list tr");
     let actors = [];
-    $(".cast_list .itemprop a").each((index, item) => {
-        const actor = $(item).text();
+
+    actorsList.each((index, item) => {
+        let $item = $(item),
+            children = $item.find("td.character div").children();
+
+        let actor = {
+            "id": $item.find("td.itemprop a").attr("href"),
+            "imageLink": $item.find("img").attr("src"),
+            "name": $item.find("span[itemprop=name]").text(),
+            "role": $(children[1]).text(),
+            "heroName": $(children[0]).text()
+        };
+
         actors.push(actor);
     });
-    let genres = [];
-    $("span[itemprop='genre']").each((index, item) => {
-        const category = $(item).text();
-        genres.push(category);
-    });
 
-    let movieInfo = {
-        image: $(".poster a img").attr("src"),
-        trailer: $(".slate a").attr("href"),
-        title: $(".title_wrapper h1").text(),
-        description: $("div[itemprop='description'] p").text(),
-        categories: genres,
-        dateRelease: $("meta[itemprop='datePublished']").attr("content"),
+    return {
+        imageLink,
+        title,
+        description,
+        categories,
         actors
     };
+};
 
-    return Promise.resolve()
-        .then(() => {
-            return movieInfo;
+module.exports.extractActorInfo = (html) => {
+    $("body").html(html);
+
+    let imageSelector = "#name-poster",
+        nameSelector = "span[itemprop=name]",
+        biographySelector = "#name-bio-text div[itemprop=description]",
+        bornSelector = "#name-born-info time",
+        moviesSelector = "#filmography .filmo-category-section .filmo-row";
+
+    let imageLink = $(imageSelector).attr("src");
+    let name = $(nameSelector).text();
+    let biography = $(biographySelector).text();
+    let born = $(bornSelector).attr("datetime");
+
+    let movies = [];
+    $(moviesSelector).each((index, item) => {
+        let $item = $(item);
+        let movieName = $item.find("b a").text();
+        let imdbId = $item.find("b a").attr("href");
+
+        movies.push({
+            movieName,
+            imdbId
         });
+    });
+
+    return {
+        imageLink,
+        name,
+        biography,
+        born,
+        movies
+    };
 };
