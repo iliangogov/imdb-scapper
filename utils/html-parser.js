@@ -23,3 +23,32 @@ module.exports.parseSimpleMovie = (selector, html) => {
             return items;
         });
 };
+
+module.exports.parseMovieInformation = (html) => {
+    $("body").html(html);
+    let actors = [];
+    $(".cast_list .itemprop a").each((index, item) => {
+        const actor = $(item).text();
+        actors.push(actor);
+    });
+    let genres = [];
+    $("span[itemprop='genre']").each((index, item) => {
+        const category = $(item).text();
+        genres.push(category);
+    });
+
+    let movieInfo = {
+        image: $(".poster a img").attr("src"),
+        trailer: $(".slate a").attr("href"),
+        title: $(".title_wrapper h1").text(),
+        description: $("div[itemprop='description'] p").text(),
+        categories: genres,
+        dateRelease: $("meta[itemprop='datePublished']").attr("content"),
+        actors
+    };
+
+    return Promise.resolve()
+        .then(() => {
+            return movieInfo;
+        });
+};

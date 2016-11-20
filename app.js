@@ -1,8 +1,9 @@
 /* globals console require setTimeout Promise */
-'use strict';
+"use strict";
 
 const httpRequester = require("./utils/http-requester");
 const htmlParser = require("./utils/html-parser");
+const movieScrapper = require("./utils/movie-scrapper");
 const queuesFactory = require("./data-structures/queue");
 const modelsFactory = require("./models");
 const constants = require("./config/constants");
