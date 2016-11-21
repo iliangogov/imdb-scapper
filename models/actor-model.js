@@ -1,29 +1,14 @@
-"use strict";
-
 const mongoose = require("mongoose"),
     Schema = mongoose.Schema;
 
 let ActorSchema = new Schema({
-    id: {
-        type: String,
-        required: true
-    },
-    imageLink: {
-        type: String,
-        required: true
-    },
+    image: { type: String },
     name: {
         type: String,
         required: true
     },
-    role: {
-        type: String,
-        required: true
-    },
-    heroName: {
-        type: String,
-        required: true
-    }
+    biography: { type: String },
+    movies: { type: Array }
 });
 
 mongoose.model("Actor", ActorSchema);
